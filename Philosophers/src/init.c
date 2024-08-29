@@ -6,7 +6,7 @@
 /*   By: rbouizer <rbouizer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 23:01:03 by rbouizer          #+#    #+#             */
-/*   Updated: 2024/08/26 18:05:08 by rbouizer         ###   ########.fr       */
+/*   Updated: 2024/08/28 18:11:51 by rbouizer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,12 @@ t_data *init_data(char **info, int count)
     data->time_to_eat = ft_atoi(info[3]);
     data->time_to_sleep = ft_atoi(info[4]);
     data->is_died = 0 ;
+    data->cmp = 0 ;
     if(count == 6)
         data->time_to_m_eat = ft_atoi(info[5]);
     data->time_to_start= timestamp();
-    //printf("nb_philo : %llu , time_to_die : %llu , time_to_eat : %llu , time_to_sleep : %llu , time_to_m_eat : %llu ,  time_to_start : %llu",data->nb_philo, data->time_to_die, data->time_to_eat, data->time_to_sleep, data->time_to_m_eat,  data->time_to_start );
+    pthread_mutex_init(&data->mutex,NULL);
+    pthread_mutex_init(&data->lock, NULL);
     return data ;
 }
 
@@ -64,6 +66,35 @@ t_philos *init_philos(char **nb)
     philos->bottom= NULL;
     return philos;
 }
+
+int ft_init(char **info, int count, t_data **data, t_philo **philo, t_philos **philos)
+{
+    int i;
+
+    i = 1;
+    *data = init_data(info, count);
+    if (!(*data))
+        return 0;
+
+    *philos = init_philos(info);
+    if (!*philos) {
+        free(*data);
+        return 0;
+    }
+    while (i <= (*philos)->nb_philo ) {
+        *philo = init_philo(i, *data);
+        if (!*philo) {
+            free(*philos);
+            free(*data);
+            return 0;
+        }
+        add_back(*philos, *philo);
+        i++;
+    }
+    (*philos)->bottom->next = (*philos)->top;
+    return 1;
+}
+
 
 
 

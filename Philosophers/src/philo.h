@@ -6,7 +6,7 @@
 /*   By: rbouizer <rbouizer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 10:03:34 by rbouizer          #+#    #+#             */
-/*   Updated: 2024/08/26 18:16:30 by rbouizer         ###   ########.fr       */
+/*   Updated: 2024/08/28 18:28:37 by rbouizer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@ typedef struct s_data
 	uint64_t time_to_sleep;
 	long long time_to_m_eat;
 	uint64_t time_to_start;
+	pthread_mutex_t		mutex;
+	pthread_mutex_t		lock;
+	int	cmp;
 	int is_died;
 
 }   t_data;
@@ -51,13 +54,14 @@ typedef struct s_philos
 	t_philo *bottom;
 }   t_philos;
 
+void	ft_putstr_fd(char *s, int fd);
 int ft_atoi(const char *str);
 int check_number(char *nb[]);
-int term(char **info, int count );
 uint64_t	timestamp();
 void	add_back(t_philos *philos, t_philo *philo);
-t_data *init_data(char **info, int count);
-t_philo *init_philo(int id, t_data *data);
-t_philos *init_philos(char **nb);
-void	ft_putstr_fd(char *s, int fd);
+int term(char **info, int count );
+int ft_init(char **info, int count, t_data **data, t_philo **philo, t_philos **philos);
+int ft_init_pro(t_philos **philos, t_data **data);
+void *routine(void *arg);
+
 #endif

@@ -6,7 +6,7 @@
 /*   By: rbouizer <rbouizer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 23:00:53 by rbouizer          #+#    #+#             */
-/*   Updated: 2024/08/26 00:22:15 by rbouizer         ###   ########.fr       */
+/*   Updated: 2024/08/28 18:06:05 by rbouizer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int is_number(char *nb)
     int i;
 
     i = 0;
-    while (nb[i]== ' ')
+    while (nb[i] && nb[i]== ' ')
         i++;
     if(nb == NULL || nb[i] =='\0')
         return 0;
@@ -94,7 +94,7 @@ void	add_back(t_philos *philos, t_philo *philo)
 		return ;
 	}
 	tmp = philos->top;
-	while (tmp->next)
+	while (tmp && tmp->next)
 		tmp = tmp->next;
 	tmp->next = philo;
 	philos->bottom = philo;
