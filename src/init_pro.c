@@ -6,11 +6,38 @@
 /*   By: rbouizer <rbouizer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 16:50:09 by rbouizer          #+#    #+#             */
-/*   Updated: 2024/10/11 17:47:38 by rbouizer         ###   ########.fr       */
+/*   Updated: 2024/10/21 02:16:42 by rbouizer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	monitor(t_philos *philos)
+{
+	t_philo	*tmp;
+
+	tmp = philos->top;
+	while (1)
+	{
+		pthread_mutex_lock(&tmp->data->mutex);
+		if ((int)((timestamp() - tmp->data->time_to_start)
+			- tmp->last_eat) >= (int)tmp->data->time_to_die)
+		{
+			tmp->data->is_died = 1;
+			pthread_mutex_lock(&tmp->data->lock);
+			printf("%llu %d die\n",
+				(timestamp() - tmp->data->time_to_start), tmp->id);
+			return (free(philos->thread), free(philos));
+		}
+		if (tmp->data->cmp == philos->nb_philo)
+		{
+			pthread_mutex_lock(&tmp->data->lock);
+			return (free(philos->thread), free(philos));
+		}
+		pthread_mutex_unlock(&tmp->data->mutex);
+		tmp = tmp->next;
+	}
+}
 
 int	init_forks(t_philos *philos)
 {
@@ -60,6 +87,7 @@ int	init_thread(t_philos *philos, t_data *data)
 			return (0);
 		tmp = tmp->next;
 	}
+	monitor(philos);
 	return (1);
 }
 

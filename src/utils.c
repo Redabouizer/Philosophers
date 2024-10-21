@@ -6,7 +6,7 @@
 /*   By: rbouizer <rbouizer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 23:00:53 by rbouizer          #+#    #+#             */
-/*   Updated: 2024/10/11 17:36:58 by rbouizer         ###   ########.fr       */
+/*   Updated: 2024/10/21 02:15:24 by rbouizer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,15 @@ uint64_t	timestamp(void)
 	if (gettimeofday(&tv, NULL))
 		return (0);
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+void	get_sleep(uint64_t time)
+{
+	uint64_t	start;
+
+	start = timestamp();
+	while (timestamp() - start < time)
+		usleep(50);
 }
 
 void	add_back(t_philos *philos, t_philo *philo)
