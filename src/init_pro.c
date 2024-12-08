@@ -6,11 +6,29 @@
 /*   By: rbouizer <rbouizer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 16:50:09 by rbouizer          #+#    #+#             */
-/*   Updated: 2024/10/21 02:16:42 by rbouizer         ###   ########.fr       */
+/*   Updated: 2024/12/08 16:14:22 by rbouizer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	go_to_free(t_philo *top)
+{
+	t_philo	*tmp;
+	int		i;
+
+	tmp = top;
+	i = -1;
+	if (!top)
+		return ;
+	while (++i < top->data->nb_philo)
+	{
+		tmp = top;
+		top = top->next;
+		free(tmp);
+		tmp = NULL;
+	}
+}
 
 void	monitor(t_philos *philos)
 {
@@ -21,7 +39,7 @@ void	monitor(t_philos *philos)
 	{
 		pthread_mutex_lock(&tmp->data->mutex);
 		if ((int)((timestamp() - tmp->data->time_to_start)
-			- tmp->last_eat) >= (int)tmp->data->time_to_die)
+			- tmp->last_time_to_eat) >= (int)tmp->data->time_to_die)
 		{
 			tmp->data->is_died = 1;
 			pthread_mutex_lock(&tmp->data->lock);
@@ -94,8 +112,10 @@ int	init_thread(t_philos *philos, t_data *data)
 int	ft_init_pro(t_philos **philos, t_data **data)
 {
 	if (!init_forks(*philos))
-		return (0);
-	if (!init_thread(*philos,*data))
-		return (0);
+		return (free((*philos)->thread), free((*philos)->fork),
+			go_to_free((*philos)->top), free((*philos)), free(data), 0);
+	if (!init_thread((*philos),*data))
+		return (free((*philos)->thread), free((*philos)->fork),
+			go_to_free((*philos)->top), free(philos), free(data), 0);
 	return (1);
 }

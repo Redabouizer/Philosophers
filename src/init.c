@@ -6,11 +6,31 @@
 /*   By: rbouizer <rbouizer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 23:01:03 by rbouizer          #+#    #+#             */
-/*   Updated: 2024/10/21 02:14:47 by rbouizer         ###   ########.fr       */
+/*   Updated: 2024/12/08 16:29:48 by rbouizer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	add_back(t_philos *philos, t_philo *philo)
+{
+	t_philo	*tmp;
+
+	if (!philos)
+		return ;
+	if (!philos->top)
+	{
+		philos->top = philo;
+		philos->bottom = philo;
+		return ;
+	}
+	tmp = philos->top;
+	while (tmp && tmp->next)
+		tmp = tmp->next;
+	tmp->next = philo;
+	philos->bottom = philo;
+	philos->bottom->next = NULL;
+}
 
 t_data	*init_data(char **info, int count)
 {
@@ -29,6 +49,8 @@ t_data	*init_data(char **info, int count)
 	data->cmp = 0;
 	if (count == 6)
 		data->time_to_m_eat = ft_atoi(info[5]);
+	else
+		data->time_to_m_eat = -1;
 	data->time_to_start = timestamp();
 	pthread_mutex_init(&data->mutex, NULL);
 	pthread_mutex_init(&data->lock, NULL);
@@ -46,7 +68,9 @@ t_philo	*init_philo(int id, t_data *data)
 	philo->data = data;
 	philo->fork_l = NULL;
 	philo->fork_r = NULL;
+	philo->last_time_to_eat = 0;
 	philo->num_eat = 0;
+	philo->next = NULL;
 	return (philo);
 }
 
@@ -67,9 +91,10 @@ t_philos	*init_philos(char **nb)
 	return (philos);
 }
 
-int	ft_init(char **info, int count, t_data **data, t_philo **philo, t_philos **philos)
+int	ft_init(char **info, int count, t_data **data, t_philos **philos)
 {
-	int	i;
+	int		i;
+	t_philo	*philo;
 
 	i = 1;
 	*data = init_data(info, count);
@@ -80,10 +105,10 @@ int	ft_init(char **info, int count, t_data **data, t_philo **philo, t_philos **p
 		return (free(*data), 0);
 	while (i <= (*philos)->nb_philo)
 	{
-		*philo = init_philo(i, *data);
-		if (!*philo)
+		philo = init_philo(i, *data);
+		if (!philo)
 			return (free(*philos), free(*data), 0);
-		add_back(*philos, *philo);
+		add_back(*philos, philo);
 		i++;
 	}
 	(*philos)->bottom->next = (*philos)->top;

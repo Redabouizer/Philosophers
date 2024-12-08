@@ -6,7 +6,7 @@
 #    By: rbouizer <rbouizer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/23 10:17:48 by rbouizer          #+#    #+#              #
-#    Updated: 2024/08/28 17:36:47 by rbouizer         ###   ########.fr        #
+#    Updated: 2024/12/08 16:10:35 by rbouizer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ SRCS = src/utils.c \
 
 OBJS = $(SRCS:.c=.o)
 
-CFLAGS = -g -Wall -Wextra -Werror #-fsanitize=address -g
+CFLAGS = -g -Wall -Wextra -Werror -fsanitize=address -g
 CC = cc
 RM = rm -rf
 
@@ -36,6 +36,6 @@ clean:
 	$(RM) $(OBJS)
 
 fclean: clean
-	$(RM) $(NAME) 
+	$(RM) $(NAME)
 
 re: fclean all
